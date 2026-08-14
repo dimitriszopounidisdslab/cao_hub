@@ -4,19 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CAO | Mediterranean Strategic Aviation Intelligence</title>
-    
+    <meta name="description" content="Crete Aviation Observatory (CAO): a Mediterranean strategic aviation intelligence hub transforming multi-dimensional aviation, airport and passenger data into predictive intelligence and decision support.">
+    <meta name="theme-color" content="#020617">
+
+    <!-- Open Graph / Twitter readiness.
+         NOTE: og:url and og:image intentionally omitted — add the real domain
+         and a 1200x630 share image when they are available. Do not use placeholders. -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="CAO | Mediterranean Strategic Aviation Intelligence">
+    <meta property="og:description" content="Crete Aviation Observatory (CAO) transforms multi-dimensional aviation datasets into high-stakes strategic assets and predictive intelligence.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="CAO | Mediterranean Strategic Aviation Intelligence">
+    <meta name="twitter:description" content="Crete Aviation Observatory (CAO) transforms multi-dimensional aviation datasets into high-stakes strategic assets and predictive intelligence.">
+
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="logo.png">
+
+    <!-- Fonts (preconnect for performance) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Heavy Typography -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Icons + AOS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    
+
     <script>
         tailwind.config = {
             theme: {
@@ -29,370 +45,474 @@
             }
         }
     </script>
+
     <style>
-        .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); }
+        /* ---------- Design system helpers ---------- */
+        .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); }
         .hero-gradient { background: radial-gradient(circle at 80% 20%, #0086D6 0%, #020617 70%); }
-        .text-gradient { background: linear-gradient(90deg, #33B2E5, #ffffff, #33B2E5); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 5s linear infinite; }
+
+        .text-gradient {
+            background: linear-gradient(90deg, #33B2E5, #ffffff, #33B2E5);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: #33B2E5; /* fallback if background-clip is unsupported */
+            animation: shine 5s linear infinite;
+        }
         @keyframes shine { to { background-position: 200% center; } }
+
         .nav-scrolled { background: rgba(2, 6, 23, 0.98); border-bottom: 2px solid rgba(0, 134, 214, 0.4); padding: 0.6rem 0; }
-        .authority-badge { border-left: 2px solid rgba(51, 178, 229, 0.4); padding-left: 1.5rem; margin-bottom: 1.5rem; }
-        
-        /* Mobile Menu Transitions */
+        .authority-badge { border-left: 2px solid rgba(51, 178, 229, 0.4); padding-left: 1.5rem; }
+
+        /* Anchored sections should not hide under the fixed navbar */
+        [id] { scroll-margin-top: 6rem; }
+
+        /* Visible, on-brand keyboard focus */
+        a:focus-visible, button:focus-visible {
+            outline: 2px solid #33B2E5;
+            outline-offset: 3px;
+            border-radius: 4px;
+        }
+
+        /* ---------- Mobile menu transitions ---------- */
         #mobile-menu { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); transform: translateX(100%); }
         body.menu-open #mobile-menu { transform: translateX(0); }
         #menu-overlay { transition: opacity 0.3s ease; pointer-events: none; opacity: 0; }
         body.menu-open #menu-overlay { opacity: 1; pointer-events: auto; }
+        body.menu-open { overflow: hidden; }
+
+        /* ---------- Reduced motion ---------- */
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            .text-gradient { animation: none; }
+            #mobile-menu, #menu-overlay { transition: none; }
+            *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+        }
     </style>
 </head>
 <body class="bg-aviation-navy text-slate-200 font-sans selection:bg-aviation-main selection:text-white overflow-x-hidden">
 
-    <!-- Navigation -->
-    <nav id="navbar" class="fixed w-full z-50 transition-all duration-500 py-8">
-        <div class="max-w-7xl mx-auto px-8 flex justify-between items-center">
-            <!-- BACK TO TOP LOGO -->
-            <a href="#vision" class="flex items-center gap-4 group cursor-pointer focus:outline-none">
-                <img src="logo.png" alt="CAO Logo" class="h-12 w-auto filter drop-shadow-[0_0_15px_rgba(0,134,214,0.6)]">
+    <!-- Skip link for keyboard users -->
+    <a href="#vision" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-6 focus:py-3 focus:bg-aviation-main focus:text-white focus:rounded-xl focus:font-black focus:uppercase focus:tracking-widest focus:text-xs">Skip to content</a>
+
+    <!-- ================= NAVIGATION ================= -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-500 py-5 md:py-8" aria-label="Main navigation">
+        <div class="max-w-7xl mx-auto px-6 md:px-8 flex justify-between items-center">
+            <!-- Logo / back to top -->
+            <a href="#vision" class="flex items-center gap-3 md:gap-4 group cursor-pointer focus:outline-none" aria-label="CAO — back to top">
+                <img src="logo.png" alt="Crete Aviation Observatory logo" class="h-10 md:h-12 w-auto filter drop-shadow-[0_0_15px_rgba(0,134,214,0.6)]">
                 <div>
-                    <span class="block font-black text-2xl tracking-tighter text-white leading-none uppercase">CAO</span>
+                    <span class="block font-black text-xl md:text-2xl tracking-tighter text-white leading-none uppercase">CAO</span>
                     <span class="text-[8px] uppercase tracking-[0.4em] text-aviation-light font-black">Mediterranean Strategic Hub</span>
                 </div>
             </a>
-            
-            <!-- Desktop Menu -->
+
+            <!-- Desktop menu -->
             <div class="hidden lg:flex items-center gap-10 text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
-                <a href="#vision" class="hover:text-aviation-light transition-colors uppercase">Vision</a>
-                <a href="#intelligence" class="hover:text-aviation-light transition-colors uppercase text-nowrap">Aviation Tools</a>
-                <a href="#market" class="hover:text-aviation-light transition-colors uppercase text-nowrap">Market Pulse</a>
-                <a href="#authority" class="hover:text-aviation-light transition-colors uppercase">Authority</a>
-                <a href="#contact" class="px-6 py-2 bg-aviation-main text-white rounded-full shadow-[0_0_30px_rgba(0,134,214,0.4)] hover:scale-105 transition-all text-nowrap flex items-center uppercase">Request Intelligence</a>
+                <a href="#vision" class="hover:text-aviation-light transition-colors">Vision</a>
+                <a href="#intelligence" class="hover:text-aviation-light transition-colors text-nowrap">Aviation Tools</a>
+                <a href="#market" class="hover:text-aviation-light transition-colors text-nowrap">Market Pulse</a>
+                <a href="#authority" class="hover:text-aviation-light transition-colors">Authority</a>
+                <a href="#contact" class="px-6 py-2 bg-aviation-main text-white rounded-full shadow-[0_0_30px_rgba(0,134,214,0.4)] hover:scale-105 transition-all text-nowrap flex items-center">Request Intelligence</a>
             </div>
 
-            <!-- Mobile Toggle -->
-            <button id="menu-btn" class="lg:hidden text-white text-2xl p-2 focus:outline-none"><i class="fa-solid fa-bars-staggered"></i></button>
+            <!-- Mobile toggle -->
+            <button id="menu-btn" class="lg:hidden text-white text-2xl p-2 focus:outline-none" aria-label="Open menu" aria-controls="mobile-menu" aria-expanded="false">
+                <i class="fa-solid fa-bars-staggered" aria-hidden="true"></i>
+            </button>
         </div>
     </nav>
 
-    <!-- Mobile Slide-out Menu -->
-    <div id="menu-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60]"></div>
-    <div id="mobile-menu" class="fixed top-0 right-0 w-[80%] max-w-sm h-full bg-aviation-navy z-[70] p-10 flex flex-col shadow-2xl">
-        <button id="menu-close" class="text-white text-3xl self-end mb-16 focus:outline-none"><i class="fa-solid fa-xmark"></i></button>
-        <div class="flex flex-col gap-10 text-3xl font-black uppercase tracking-tighter">
-            <a href="#vision" class="mob-link text-slate-400 hover:text-aviation-light uppercase">Vision</a>
-            <a href="#intelligence" class="mob-link text-slate-400 hover:text-aviation-light uppercase">Aviation Tools</a>
-            <a href="#market" class="mob-link text-slate-400 hover:text-aviation-light uppercase">Market Pulse</a>
-            <a href="#authority" class="mob-link text-slate-400 hover:text-aviation-light uppercase">Authority</a>
-            <a href="#contact" class="mob-link text-aviation-light border-l-4 border-aviation-light pl-4 uppercase">Request Intel</a>
+    <!-- ================= MOBILE MENU ================= -->
+    <div id="menu-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60]" aria-hidden="true"></div>
+    <div id="mobile-menu" class="fixed top-0 right-0 w-[80%] max-w-sm h-full bg-aviation-navy z-[70] p-8 sm:p-10 flex flex-col shadow-2xl" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+        <button id="menu-close" class="text-white text-3xl self-end mb-12 sm:mb-16 focus:outline-none" aria-label="Close menu">
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+        <div class="flex flex-col gap-8 sm:gap-10 text-2xl sm:text-3xl font-black uppercase tracking-tighter">
+            <a href="#vision" class="mob-link text-slate-400 hover:text-aviation-light">Vision</a>
+            <a href="#intelligence" class="mob-link text-slate-400 hover:text-aviation-light">Aviation Tools</a>
+            <a href="#market" class="mob-link text-slate-400 hover:text-aviation-light">Market Pulse</a>
+            <a href="#authority" class="mob-link text-slate-400 hover:text-aviation-light">Authority</a>
+            <a href="#contact" class="mob-link text-aviation-light border-l-4 border-aviation-light pl-4">Request Intel</a>
         </div>
     </div>
 
-    <!-- Hero Section: FIXED MOBILE OVERLAP -->
-    <header id="vision" class="relative min-h-screen flex flex-col justify-center items-center pt-48 lg:pt-0 overflow-hidden hero-gradient">
-        <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
-        <div class="relative z-10 max-w-7xl mx-auto px-8 text-center" data-aos="zoom-out" data-aos-duration="1500">
-            <span class="inline-block px-6 py-2 mb-8 text-[10px] font-black text-aviation-light border-2 border-aviation-light/30 rounded-full backdrop-blur-xl tracking-[0.6em] uppercase">
+    <!-- ================= HERO ================= -->
+    <header id="vision" class="relative min-h-screen flex flex-col justify-center items-center pt-32 sm:pt-36 lg:pt-0 pb-14 lg:pb-0 overflow-hidden hero-gradient">
+        <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" aria-hidden="true"></div>
+        <div class="relative z-10 max-w-7xl mx-auto px-6 md:px-8 text-center" data-aos="zoom-out" data-aos-duration="1500">
+            <span class="inline-block px-5 sm:px-6 py-2 mb-8 text-[9px] sm:text-[10px] font-black text-aviation-light border-2 border-aviation-light/30 rounded-full backdrop-blur-xl tracking-[0.35em] sm:tracking-[0.6em] uppercase">
                 Mediterranean Strategic Intelligence Center
             </span>
-            <h1 class="text-6xl md:text-[130px] font-black text-white mb-8 leading-[0.8] tracking-tighter uppercase">
+            <h1 class="text-5xl sm:text-6xl md:text-8xl lg:text-[110px] xl:text-[130px] font-black text-white mb-8 leading-[0.85] md:leading-[0.8] tracking-tighter uppercase">
                 DATA TO <br><span class="text-gradient font-black">DECISION</span>
             </h1>
-            <p class="text-lg md:text-2xl text-slate-400 mb-12 max-w-4xl mx-auto font-bold leading-relaxed tracking-tight">
+            <p class="text-base sm:text-lg md:text-2xl text-slate-400 mb-10 md:mb-12 max-w-4xl mx-auto font-bold leading-relaxed tracking-tight">
                 Crete Aviation Observatory (CAO) architects the future of Mediterranean air transport. We transform multi-dimensional datasets into high-stakes strategic assets and predictive intelligence.
             </p>
-            <div class="flex flex-col md:flex-row gap-6 justify-center items-center">
-                <a href="#intelligence" class="w-full sm:w-auto px-12 py-5 bg-aviation-main text-white rounded-2xl font-black uppercase tracking-widest hover:bg-aviation-dark transition-all shadow-[0_20px_60px_rgba(0,134,214,0.4)]">
+            <div class="flex flex-col md:flex-row gap-4 md:gap-6 justify-center items-center">
+                <a href="#intelligence" class="w-full sm:w-auto px-10 md:px-12 py-4 md:py-5 bg-aviation-main text-white rounded-2xl font-black uppercase tracking-widest hover:bg-aviation-dark transition-all shadow-[0_20px_60px_rgba(0,134,214,0.4)] text-sm md:text-base">
                     Intelligence Workflow
                 </a>
-                <a href="#market" class="w-full sm:w-auto px-12 py-5 bg-white/5 border border-white/10 rounded-2xl font-black uppercase tracking-widest hover:bg-white/10 transition-colors backdrop-blur-md">
+                <a href="#market" class="w-full sm:w-auto px-10 md:px-12 py-4 md:py-5 bg-white/5 border border-white/10 rounded-2xl font-black uppercase tracking-widest hover:bg-white/10 transition-colors backdrop-blur-md text-sm md:text-base">
                     Mediterranean Pulse
                 </a>
             </div>
         </div>
     </header>
 
-  <!-- STRATEGIC INTELLIGENCE WORKFLOW -->
-<section id="intelligence" class="py-12 md:py-16 lg:py-32 relative">
-    <div class="max-w-7xl mx-auto px-6 md:px-8">
-        <div class="grid lg:grid-cols-2 gap-10 lg:gap-20 items-center">
+    <main>
 
-            <div data-aos="fade-right">
-                <h2 class="text-xs font-black text-aviation-light uppercase tracking-[0.8em] mb-6">
-                    Strategic Data Architecture
-                </h2>
+        <!-- ================= STRATEGIC INTELLIGENCE WORKFLOW ================= -->
+        <section id="intelligence" class="py-14 md:py-20 lg:py-32 relative">
+            <div class="max-w-7xl mx-auto px-6 md:px-8">
+                <div class="grid lg:grid-cols-2 gap-10 lg:gap-20 items-center">
 
-                <h3 class="text-5xl font-black text-white tracking-tighter leading-tight mb-6 lg:mb-10 uppercase italic">
-                    From Raw Microdata <br>to Boardroom ROI
-                </h3>
+                    <div data-aos="fade-right">
+                        <h2 class="text-[10px] sm:text-xs font-black text-aviation-light uppercase tracking-[0.4em] sm:tracking-[0.8em] mb-5 md:mb-6">
+                            Strategic Data Architecture
+                        </h2>
 
-                <p class="text-slate-400 text-lg leading-loose mb-8 lg:mb-12 font-bold uppercase tracking-tighter">
-                    We deploy custom analytical tools to map the entire aviation value chain.
-                </p>
-            </div>
+                        <h3 class="text-4xl sm:text-5xl font-black text-white tracking-tighter leading-tight mb-6 lg:mb-10 uppercase italic">
+                            From Raw Microdata <br class="hidden sm:block">to Boardroom ROI
+                        </h3>
 
-            <div class="glass p-6 md:p-12 rounded-[2.5rem] md:rounded-[4rem] border-white/10" data-aos="fade-left">
-
-                <h4 class="text-center text-[10px] font-black uppercase tracking-[0.4em] mb-8 md:mb-12 text-slate-500 leading-relaxed">
-                    Mediterranean Data Ingestion (2020-2025)
-                </h4>
-
-                <!-- FIXED BOXES FOR MOBILE -->
-                <div class="grid grid-cols-2 gap-4 md:gap-8 text-center uppercase tracking-tighter font-black">
-
-                    <div class="p-4 md:p-8 bg-white/5 rounded-3xl border border-white/5 flex flex-col justify-center min-h-[130px]">
-                        <div class="text-2xl md:text-4xl text-white mb-2 uppercase leading-none">
-                            14k+
-                        </div>
-
-                        <div class="text-[8px] md:text-[9px] text-aviation-light tracking-widest uppercase leading-tight">
-                            Primary Samples
-                        </div>
-                    </div>
-
-                    <div class="p-4 md:p-8 bg-white/5 rounded-3xl border border-white/5 flex flex-col justify-center min-h-[130px]">
-                        <div class="text-2xl md:text-4xl text-white mb-2 uppercase leading-none text-nowrap">
-                            6Y
-                        </div>
-
-                        <div class="text-[8px] md:text-[9px] text-aviation-light tracking-widest leading-tight">
-                            Trend Analysis
-                        </div>
-                    </div>
-
-                    <div class="p-4 md:p-8 bg-white/5 rounded-3xl border border-white/5 flex flex-col justify-center min-h-[130px]">
-                        <div class="text-2xl md:text-4xl text-white mb-2 leading-none uppercase tracking-tighter">
-                            14 Hubs
-                        </div>
-
-                        <div class="text-[8px] md:text-[9px] text-aviation-light tracking-widest leading-tight uppercase">
-                            Med Panel
-                        </div>
-                    </div>
-
-                    <div class="p-4 md:p-8 bg-aviation-main rounded-3xl shadow-xl flex flex-col justify-center min-h-[130px]">
-                        <div class="text-2xl md:text-4xl text-white mb-2 leading-none uppercase tracking-tighter">
-                            DTDS
-                        </div>
-
-                        <div class="text-[8px] md:text-[9px] text-white tracking-widest leading-tight uppercase">
-                            Decision Strategy
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-        </div>
-    </div>
-</section>
-
-
-<!-- MARKET PULSE -->
-<section id="market" class="py-12 md:py-16 lg:py-32 bg-slate-900/40 border-y border-white/5">
-
-    <div class="max-w-7xl mx-auto px-6 md:px-8 grid lg:grid-cols-2 gap-10 lg:gap-20 items-center">
-
-        <div data-aos="fade-right">
-
-            <h2 class="text-xs font-black text-aviation-light uppercase tracking-[0.5em] mb-4 text-glow">
-                As a Guide | Market Dynamics 2025
-            </h2>
-
-            <h3 class="text-4xl md:text-5xl font-black text-white mb-6 lg:mb-10 tracking-tighter uppercase leading-tight">
-                The Regional <br>Operator Pulse
-            </h3>
-
-            <p class="text-slate-400 text-lg leading-relaxed mb-8 lg:mb-10 font-bold uppercase tracking-tighter italic">
-                Monitoring the aggressive reconfiguration of the Mediterranean aviation map. We track the shift from traditional legacy dominance to a high-intensity diversified landscape.
-            </p>
-
-        </div>
-
-        <!-- FIXED CHART HEIGHT ON MOBILE -->
-        <div class="glass p-6 md:p-12 rounded-[3rem] md:rounded-[4rem] h-[350px] md:h-[450px] relative flex flex-col justify-center" data-aos="fade-left">
-            <canvas id="marketChart"></canvas>
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- PASSENGER DATA: FIXED SPACING ON MOBILE -->
-<section class="py-12 lg:py-40">
-
-    <div class="max-w-7xl mx-auto px-6 md:px-8 text-center mb-10 lg:mb-24 uppercase font-black">
-
-        <h3 class="text-4xl md:text-5xl font-black text-white tracking-tighter uppercase leading-tight">
-            Passenger Ecosystem Analysis
-        </h3>
-
-    </div>
-
-    <div class="max-w-7xl mx-auto px-6 md:px-8 grid md:grid-cols-3 gap-6 lg:gap-8 text-center uppercase tracking-tighter font-black">
-
-        <div class="p-10 lg:p-12 glass rounded-[2.5rem] group hover:bg-white/[0.03] transition-all" data-aos="fade-up">
-
-            <h5 class="text-[10px] text-aviation-light mb-8 tracking-[0.4em] uppercase font-black">
-                Income Core
-            </h5>
-
-            <p class="text-sm text-slate-500 leading-loose uppercase">
-                Affluent Hub Profile: 41% Middle & 22% High-Income Travelers detected.
-            </p>
-
-        </div>
-
-        <div class="p-10 lg:p-12 glass rounded-[2.5rem] group hover:bg-white/[0.03] transition-all" data-aos="fade-up" data-aos-delay="100">
-
-            <h5 class="text-[10px] text-aviation-light mb-8 tracking-[0.4em] uppercase font-black">
-                Stay Cycles
-            </h5>
-
-            <p class="text-sm text-slate-500 leading-loose uppercase">
-                Average regional immersion: 8.5 days. Premium Carriers reaching 11-day peaks.
-            </p>
-
-        </div>
-
-        <div class="p-10 lg:p-12 glass rounded-[2.5rem] group hover:bg-white/[0.03] transition-all" data-aos="fade-up" data-aos-delay="200">
-
-            <h5 class="text-[10px] text-aviation-light mb-8 tracking-[0.4em] uppercase font-black">
-                Digital Booking
-            </h5>
-
-            <p class="text-sm text-slate-500 leading-loose uppercase">
-                Direct Transition: 49% of dominant carrier passengers are digital-independent.
-            </p>
-
-        </div>
-
-    </div>
-
-</section>
-    <!-- INNOVATION AWARD -->
-    <section id="innovation" class="py-32 bg-slate-900/40 border-y border-white/5 relative overflow-hidden">
-        <div class="max-w-7xl mx-auto px-8 text-center lg:text-left">
-            <div class="glass p-10 lg:p-12 rounded-[3.5rem] border-l-8 border-aviation-main relative z-10" data-aos="fade-up">
-                <div class="flex flex-col lg:flex-row gap-16 items-center">
-                    <img src="iahc_award.jpg" alt="Award" class="w-64 md:w-80 rounded-2xl shadow-2xl border border-white/10">
-                    <div class="flex-1">
-                        <span class="text-[10px] font-black text-aviation-light uppercase tracking-[0.6em] mb-4 block uppercase leading-tight font-black">Excellence in Innovation</span>
-                        <h3 class="text-4xl md:text-5xl font-black text-white tracking-tighter mb-8 leading-none uppercase leading-tight font-black">SkyImpact Challenge 2026</h3>
-                        <p class="text-slate-400 text-xl font-bold italic mb-10 leading-relaxed uppercase tracking-tighter italic font-black uppercase">
-                            "In recognition of excellent innovation and contribution to the future of aviation."
+                        <p class="text-slate-400 text-base sm:text-lg leading-relaxed sm:leading-loose font-bold uppercase tracking-tight">
+                            We deploy custom analytical tools to map the entire aviation value chain.
                         </p>
-                        <div class="flex flex-wrap gap-4 font-black text-[9px] uppercase tracking-widest text-aviation-light justify-center lg:justify-start">
-                            <span class="px-5 py-2 bg-aviation-main text-white rounded-full">3rd Prize Winner</span>
-                            <span class="px-5 py-2 border border-white/10 glass rounded-full">Project: Door-to-Gate</span>
-                            <span class="px-5 py-2 border border-aviation-light/30 glass rounded-full text-aviation-light uppercase font-black tracking-widest uppercase">IAHC International Recognition</span>
+                    </div>
+
+                    <div class="glass p-5 sm:p-8 md:p-12 rounded-[2rem] sm:rounded-[2.5rem] md:rounded-[4rem]" data-aos="fade-left">
+
+                        <h4 class="text-center text-[10px] font-black uppercase tracking-[0.3em] sm:tracking-[0.4em] mb-8 md:mb-12 text-slate-500 leading-relaxed">
+                            Mediterranean Data Ingestion (2020-2025)
+                        </h4>
+
+                        <!-- Data ingestion matrix — equal-height analytical cells -->
+                        <div class="grid grid-cols-2 gap-3 sm:gap-4 md:gap-8 text-center uppercase tracking-tighter font-black">
+
+                            <div class="p-4 md:p-8 bg-white/5 rounded-3xl border border-white/5 flex flex-col justify-center min-h-[110px] sm:min-h-[130px]">
+                                <div class="text-2xl sm:text-3xl md:text-4xl text-white mb-2 leading-none">
+                                    14k+
+                                </div>
+                                <div class="text-[8px] md:text-[9px] text-aviation-light tracking-widest leading-tight">
+                                    Primary Samples
+                                </div>
+                            </div>
+
+                            <div class="p-4 md:p-8 bg-white/5 rounded-3xl border border-white/5 flex flex-col justify-center min-h-[110px] sm:min-h-[130px]">
+                                <div class="text-2xl sm:text-3xl md:text-4xl text-white mb-2 leading-none text-nowrap">
+                                    6Y
+                                </div>
+                                <div class="text-[8px] md:text-[9px] text-aviation-light tracking-widest leading-tight">
+                                    Trend Analysis
+                                </div>
+                            </div>
+
+                            <div class="p-4 md:p-8 bg-white/5 rounded-3xl border border-white/5 flex flex-col justify-center min-h-[110px] sm:min-h-[130px]">
+                                <div class="text-2xl sm:text-3xl md:text-4xl text-white mb-2 leading-none tracking-tighter">
+                                    14 Hubs
+                                </div>
+                                <div class="text-[8px] md:text-[9px] text-aviation-light tracking-widest leading-tight">
+                                    Med Panel
+                                </div>
+                            </div>
+
+                            <div class="p-4 md:p-8 bg-aviation-main rounded-3xl shadow-xl flex flex-col justify-center min-h-[110px] sm:min-h-[130px]">
+                                <div class="text-2xl sm:text-3xl md:text-4xl text-white mb-2 leading-none tracking-tighter">
+                                    DTDS
+                                </div>
+                                <div class="text-[8px] md:text-[9px] text-white tracking-widest leading-tight">
+                                    Decision Strategy
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= MARKET PULSE ================= -->
+        <section id="market" class="py-14 md:py-20 lg:py-32 bg-slate-900/40 border-y border-white/5">
+            <div class="max-w-7xl mx-auto px-6 md:px-8 grid lg:grid-cols-2 gap-10 lg:gap-20 items-center">
+
+                <div data-aos="fade-right">
+                    <h2 class="text-[10px] sm:text-xs font-black text-aviation-light uppercase tracking-[0.3em] sm:tracking-[0.5em] mb-4">
+                        As a Guide | Market Dynamics 2025
+                    </h2>
+
+                    <h3 class="text-4xl md:text-5xl font-black text-white mb-6 lg:mb-10 tracking-tighter uppercase leading-tight">
+                        The Regional <br class="hidden sm:block">Operator Pulse
+                    </h3>
+
+                    <p class="text-slate-400 text-base sm:text-lg leading-relaxed font-bold uppercase tracking-tight italic">
+                        Monitoring the aggressive reconfiguration of the Mediterranean aviation map. We track the shift from traditional legacy dominance to a high-intensity diversified landscape.
+                    </p>
+                </div>
+
+                <!-- Chart container: bounded responsive height, no overflow -->
+                <div class="glass p-4 sm:p-8 md:p-12 rounded-[2rem] sm:rounded-[3rem] md:rounded-[4rem] h-[300px] sm:h-[380px] md:h-[450px] relative" data-aos="fade-left">
+                    <canvas id="marketChart" role="img" aria-label="Bar chart — Operator Pulse percentage share: Ryanair 23.9, SAS 9.6, easyJet 9.1, TUI 6.7, Condor 6.3, Jet Time 6.0, Aegean 4.5"></canvas>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= PASSENGER ECOSYSTEM ANALYSIS ================= -->
+        <section class="py-14 md:py-24 lg:py-40" aria-labelledby="passenger-heading">
+            <div class="max-w-7xl mx-auto px-6 md:px-8 text-center mb-10 lg:mb-24">
+                <h3 id="passenger-heading" class="text-4xl md:text-5xl font-black text-white tracking-tighter uppercase leading-tight">
+                    Passenger Ecosystem Analysis
+                </h3>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-6 md:px-8 grid md:grid-cols-3 gap-5 lg:gap-8 text-center uppercase tracking-tighter font-black">
+
+                <div class="p-8 sm:p-10 lg:p-12 glass rounded-[2rem] sm:rounded-[2.5rem] group hover:bg-white/[0.03] transition-all" data-aos="fade-up">
+                    <h5 class="text-[10px] text-aviation-light mb-6 sm:mb-8 tracking-[0.4em] uppercase font-black">
+                        Income Core
+                    </h5>
+                    <p class="text-sm text-slate-400 leading-loose">
+                        Affluent Hub Profile: 41% Middle &amp; 22% High-Income Travelers detected.
+                    </p>
+                </div>
+
+                <div class="p-8 sm:p-10 lg:p-12 glass rounded-[2rem] sm:rounded-[2.5rem] group hover:bg-white/[0.03] transition-all" data-aos="fade-up" data-aos-delay="100">
+                    <h5 class="text-[10px] text-aviation-light mb-6 sm:mb-8 tracking-[0.4em] uppercase font-black">
+                        Stay Cycles
+                    </h5>
+                    <p class="text-sm text-slate-400 leading-loose">
+                        Average regional immersion: 8.5 days. Premium Carriers reaching 11-day peaks.
+                    </p>
+                </div>
+
+                <div class="p-8 sm:p-10 lg:p-12 glass rounded-[2rem] sm:rounded-[2.5rem] group hover:bg-white/[0.03] transition-all" data-aos="fade-up" data-aos-delay="200">
+                    <h5 class="text-[10px] text-aviation-light mb-6 sm:mb-8 tracking-[0.4em] uppercase font-black">
+                        Digital Booking
+                    </h5>
+                    <p class="text-sm text-slate-400 leading-loose">
+                        Direct Transition: 49% of dominant carrier passengers are digital-independent.
+                    </p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= INNOVATION AWARD ================= -->
+        <section id="innovation" class="py-14 md:py-20 lg:py-32 bg-slate-900/40 border-y border-white/5 relative overflow-hidden">
+            <div class="max-w-7xl mx-auto px-6 md:px-8 text-center lg:text-left">
+                <div class="glass p-6 sm:p-10 lg:p-12 rounded-[2.5rem] lg:rounded-[3.5rem] border-l-8 border-aviation-main relative z-10" data-aos="fade-up">
+                    <div class="flex flex-col lg:flex-row gap-10 lg:gap-16 items-center">
+                        <img src="iahc_award.jpg" alt="SkyImpact Challenge 2026 award — IAHC international recognition" class="w-56 sm:w-64 md:w-80 rounded-2xl shadow-2xl border border-white/10" loading="lazy">
+                        <div class="flex-1">
+                            <span class="text-[10px] font-black text-aviation-light uppercase tracking-[0.4em] sm:tracking-[0.6em] mb-4 block leading-tight">Excellence in Innovation</span>
+                            <h3 class="text-4xl md:text-5xl font-black text-white tracking-tighter mb-6 md:mb-8 leading-tight uppercase">SkyImpact Challenge 2026</h3>
+                            <p class="text-slate-400 text-lg md:text-xl font-black italic mb-8 md:mb-10 leading-relaxed uppercase tracking-tighter">
+                                "In recognition of excellent innovation and contribution to the future of aviation."
+                            </p>
+                            <div class="flex flex-wrap gap-3 md:gap-4 font-black text-[9px] uppercase tracking-widest text-aviation-light justify-center lg:justify-start">
+                                <span class="px-5 py-2 bg-aviation-main text-white rounded-full">3rd Prize Winner</span>
+                                <span class="px-5 py-2 border border-white/10 glass rounded-full">Project: Door-to-Gate</span>
+                                <span class="px-5 py-2 border border-aviation-light/30 glass rounded-full text-aviation-light">IAHC International Recognition</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- THE AUTHORITY -->
-    <section id="authority" class="py-32 lg:py-40 bg-aviation-main">
-        <div class="max-w-7xl mx-auto px-8 grid lg:grid-cols-12 gap-16 lg:gap-20 items-center">
-            <div class="lg:col-span-5" data-aos="fade-right">
-                <img src="dimitris.png" alt="Dimitris Zopounidis" class="w-full rounded-[4rem] shadow-2xl border-4 border-white/10 grayscale hover:grayscale-0 transition-all duration-1000">
-            </div>
-            <div class="lg:col-span-7 font-black uppercase tracking-tighter">
-                <h2 class="text-aviation-navy text-[10px] mb-8 font-black tracking-[0.8em] uppercase tracking-widest">The Strategic Authority</h2>
-                <h3 class="text-5xl md:text-8xl text-white leading-tight lg:leading-none mb-12 uppercase tracking-tighter font-black">Dimitris <br>Zopounidis</h3>
-                
-                <div class="space-y-4 font-black uppercase">
-                    <div class="authority-badge"><h5 class="text-white text-lg leading-tight uppercase font-black tracking-tight">PhD Candidate | Data Science Laboratory</h5><p class="text-aviation-navy text-[10px] font-black tracking-widest opacity-80 uppercase uppercase tracking-widest">Technical University of Crete - Data-to-Decision Strategy</p></div>
-                    <div class="authority-badge"><h5 class="text-white text-lg uppercase leading-tight font-black tracking-tight">Founder & Lead Researcher</h5><p class="text-aviation-navy text-[10px] font-black tracking-widest opacity-80 uppercase uppercase tracking-widest font-black">Crete Aviation Observatory (CAO)</p></div>
-                    <div class="authority-badge"><h5 class="text-white text-lg uppercase leading-tight font-black tracking-tight">Strategic Aviation Data Analyst</h5><p class="text-aviation-navy text-[10px] font-black tracking-widest opacity-80 uppercase uppercase tracking-widest leading-relaxed">SeaCrete Hotels | Hania Hotels Association | Cretan Hotel Association</p></div>
-                    <div class="authority-badge"><h5 class="text-white text-lg uppercase leading-tight font-black tracking-tight">Researcher in Projects</h5><p class="text-aviation-navy text-[10px] font-black tracking-widest opacity-80 uppercase uppercase tracking-widest font-black">Alpha Bank</p></div>
-                    <div class="authority-badge"><h5 class="text-white text-lg uppercase leading-tight font-black leading-tight uppercase">Author</h5><p class="text-aviation-navy text-[10px] font-black tracking-widest opacity-80 italic italic uppercase leading-relaxed font-black uppercase tracking-widest uppercase">Book "Artificial Intelligence and Applications in Management"</p></div>
+        <!-- ================= THE AUTHORITY ================= -->
+        <section id="authority" class="py-16 md:py-24 lg:py-40 bg-aviation-main">
+            <div class="max-w-7xl mx-auto px-6 md:px-8 grid lg:grid-cols-12 gap-10 lg:gap-20 items-center">
+                <div class="lg:col-span-5" data-aos="fade-right">
+                    <img src="dimitris.png" alt="Dimitris Zopounidis — Founder and Lead Researcher of the Crete Aviation Observatory" class="w-full max-w-md mx-auto lg:max-w-none rounded-[2.5rem] md:rounded-[4rem] shadow-2xl border-4 border-white/10 grayscale hover:grayscale-0 transition-all duration-1000" loading="lazy">
                 </div>
-                
-                <div class="mt-12 flex flex-col sm:flex-row items-center gap-10">
-                    <a href="https://dimitriszopounidisdslab.github.io/dzopounidis.github.io/" target="_blank" class="px-10 py-5 bg-aviation-navy text-white rounded-2xl font-black uppercase tracking-widest hover:bg-white hover:text-aviation-navy transition-all shadow-2xl text-center uppercase tracking-widest">View Scientific Portfolio</a>
-                    <div class="flex gap-8">
-                        <a href="https://www.linkedin.com/in/dimitriszopounidis/" target="_blank" class="text-aviation-navy text-3xl hover:scale-125 transition-transform"><i class="fa-brands fa-linkedin"></i></a>
-                        <a href="mailto:dzopounidis@tuc.gr" class="text-aviation-navy text-3xl hover:scale-125 transition-transform"><i class="fa-solid fa-envelope-open-text"></i></a>
+                <div class="lg:col-span-7 font-black uppercase tracking-tighter">
+                    <h2 class="text-aviation-navy text-[10px] mb-6 md:mb-8 font-black tracking-[0.4em] md:tracking-[0.8em] uppercase">The Strategic Authority</h2>
+                    <h3 class="text-5xl md:text-7xl xl:text-8xl text-white leading-tight lg:leading-none mb-10 md:mb-12 uppercase tracking-tighter font-black">Dimitris <br>Zopounidis</h3>
+
+                    <div class="space-y-5 md:space-y-6 font-black uppercase">
+                        <div class="authority-badge">
+                            <h5 class="text-white text-base md:text-lg leading-tight tracking-tight">PhD Candidate | Data Science Laboratory</h5>
+                            <p class="text-aviation-navy text-[10px] font-black tracking-widest opacity-80 mt-1">Technical University of Crete - Data-to-Decision Strategy</p>
+                        </div>
+                        <div class="authority-badge">
+                            <h5 class="text-white text-base md:text-lg leading-tight tracking-tight">Founder &amp; Lead Researcher</h5>
+                            <p class="text-aviation-navy text-[10px] font-black tracking-widest opacity-80 mt-1">Crete Aviation Observatory (CAO)</p>
+                        </div>
+                        <div class="authority-badge">
+                            <h5 class="text-white text-base md:text-lg leading-tight tracking-tight">Strategic Aviation Data Analyst</h5>
+                            <p class="text-aviation-navy text-[10px] font-black tracking-widest opacity-80 leading-relaxed mt-1">SeaCrete Hotels | Hania Hotels Association | Cretan Hotel Association</p>
+                        </div>
+                        <div class="authority-badge">
+                            <h5 class="text-white text-base md:text-lg leading-tight tracking-tight">Researcher in Projects</h5>
+                            <p class="text-aviation-navy text-[10px] font-black tracking-widest opacity-80 mt-1">Alpha Bank</p>
+                        </div>
+                        <div class="authority-badge">
+                            <h5 class="text-white text-base md:text-lg leading-tight tracking-tight">Author</h5>
+                            <p class="text-aviation-navy text-[10px] font-black tracking-widest opacity-80 italic leading-relaxed mt-1">Book "Artificial Intelligence and Applications in Management"</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-10 md:mt-12 flex flex-col sm:flex-row items-center gap-6 md:gap-10">
+                        <a href="https://dimitriszopounidisdslab.github.io/dzopounidis.github.io/" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto px-8 md:px-10 py-4 md:py-5 bg-aviation-navy text-white rounded-2xl font-black uppercase tracking-widest hover:bg-white hover:text-aviation-navy transition-all shadow-2xl text-center text-sm">View Scientific Portfolio</a>
+                        <div class="flex gap-8">
+                            <a href="https://www.linkedin.com/in/dimitriszopounidis/" target="_blank" rel="noopener noreferrer" class="text-aviation-navy text-3xl hover:scale-125 transition-transform" aria-label="Dimitris Zopounidis on LinkedIn"><i class="fa-brands fa-linkedin" aria-hidden="true"></i></a>
+                            <a href="mailto:dzopounidis@tuc.gr" class="text-aviation-navy text-3xl hover:scale-125 transition-transform" aria-label="Email Dimitris Zopounidis"><i class="fa-solid fa-envelope-open-text" aria-hidden="true"></i></a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Footer -->
-    <footer id="contact" class="bg-aviation-navy pt-32 pb-16 relative overflow-hidden border-t border-white/5">
-        <div class="max-w-7xl mx-auto px-8 relative z-10 flex flex-col md:flex-row justify-between items-center gap-16 md:gap-20 text-center md:text-left">
+    </main>
+
+    <!-- ================= FOOTER ================= -->
+    <footer id="contact" class="bg-aviation-navy pt-20 md:pt-32 pb-12 md:pb-16 relative overflow-hidden border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6 md:px-8 relative z-10 flex flex-col md:flex-row justify-between items-center gap-12 md:gap-20 text-center md:text-left">
             <div>
-                <!-- Authentic Color Logo -->
-                <img src="logo.png" alt="CAO Logo" class="h-16 mb-10 mx-auto md:mx-0">
-                <p class="text-[10px] text-slate-700 uppercase font-black tracking-[0.4em] max-w-sm tracking-widest leading-relaxed uppercase tracking-widest">
+                <img src="logo.png" alt="Crete Aviation Observatory logo" class="h-14 md:h-16 mb-8 md:mb-10 mx-auto md:mx-0" loading="lazy">
+                <p class="text-[10px] text-slate-500 uppercase font-black tracking-[0.3em] max-w-sm leading-relaxed">
                     CAO: Defining the Mediterranean Strategic Aviation Hub through advanced data architecture.
                 </p>
             </div>
             <div class="md:text-right font-black uppercase">
-                <h6 class="text-white font-black mb-4 uppercase text-[10px] tracking-[0.4em] opacity-40 uppercase tracking-widest">Strategic Intel Request</h6>
-                <a href="mailto:dzopounidis@tuc.gr" class="text-2xl md:text-5xl font-black text-aviation-light hover:text-white transition-all underline decoration-aviation-main decoration-4 underline-offset-[15px] tracking-tighter uppercase lowercase">dzopounidis@tuc.gr</a>
-                <p class="text-[10px] text-slate-800 uppercase font-black tracking-widest mt-16 italic font-black uppercase tracking-widest tracking-widest leading-relaxed tracking-widest">
-                    © 2026 Strategic Hub Chania (CHQ). Technical University of Crete.
+                <h6 class="text-white font-black mb-4 text-[10px] tracking-[0.4em] opacity-40 uppercase">Strategic Intel Request</h6>
+                <a href="mailto:dzopounidis@tuc.gr" class="inline-block text-2xl sm:text-3xl md:text-5xl font-black text-aviation-light hover:text-white transition-all underline decoration-aviation-main decoration-4 underline-offset-8 md:underline-offset-[15px] tracking-tighter lowercase break-all sm:break-normal">dzopounidis@tuc.gr</a>
+                <p class="text-[10px] text-slate-600 uppercase font-black tracking-widest mt-12 md:mt-16 italic leading-relaxed">
+                    &copy; 2026 Strategic Hub Chania (CHQ). Technical University of Crete.
                 </p>
             </div>
         </div>
     </footer>
 
-    <!-- Scripts -->
+    <!-- ================= SCRIPTS ================= -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        AOS.init({ once: true, duration: 1000 });
-        
-        const navbar = document.getElementById('navbar');
-        const menuBtn = document.getElementById('menu-open');
-        const menuClose = document.getElementById('menu-close');
-        const menuOverlay = document.getElementById('menu-overlay');
-        const body = document.body;
-        const navLinks = document.querySelectorAll('.mob-link');
+        (function () {
+            'use strict';
 
-        // Scroll logic
-        window.onscroll = () => {
-            if (window.scrollY > 80) navbar.classList.add('nav-scrolled');
-            else navbar.classList.remove('nav-scrolled');
-        };
+            var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-        // Mobile Menu Logic
-        const toggleMenu = () => body.classList.toggle('menu-open');
-        const closeMenu = () => body.classList.remove('menu-open');
+            /* ---------- AOS (respects reduced motion) ---------- */
+            AOS.init({
+                once: true,
+                duration: 1000,
+                disable: prefersReducedMotion
+            });
 
-        document.getElementById('menu-btn').onclick = toggleMenu;
-        document.getElementById('menu-close').onclick = closeMenu;
-        document.getElementById('menu-overlay').onclick = closeMenu;
-        document.querySelectorAll('.mob-link').forEach(link => {
-            link.onclick = closeMenu;
-        });
+            /* ---------- Navbar scroll state ---------- */
+            var navbar = document.getElementById('navbar');
+            var onScroll = function () {
+                if (window.scrollY > 80) navbar.classList.add('nav-scrolled');
+                else navbar.classList.remove('nav-scrolled');
+            };
+            window.addEventListener('scroll', onScroll, { passive: true });
+            onScroll(); // apply correct state on load (e.g. refresh mid-page)
 
-        // Chart Initialization
-        const ctx = document.getElementById('marketChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['RYANAIR', 'SAS', 'EASYJET', 'TUI', 'CONDOR', 'JET TIME', 'AEGEAN'],
-                datasets: [{
-                    label: 'Operator Pulse %',
-                    data: [23.9, 9.6, 9.1, 6.7, 6.3, 6.0, 4.5],
-                    backgroundColor: '#0086D6',
-                    borderRadius: 8,
-                    hoverBackgroundColor: '#33B2E5'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b', font: { size: 10, weight: '900' } } },
-                    x: { grid: { display: false }, ticks: { color: '#fff', font: { size: 9, weight: '900' } } }
-                }
+            /* ---------- Mobile menu ---------- */
+            var body = document.body;
+            var menuBtn = document.getElementById('menu-btn');
+            var menuClose = document.getElementById('menu-close');
+            var menuOverlay = document.getElementById('menu-overlay');
+            var mobLinks = document.querySelectorAll('.mob-link');
+
+            function openMenu() {
+                body.classList.add('menu-open');
+                menuBtn.setAttribute('aria-expanded', 'true');
+                menuClose.focus();
             }
-        });
+            function closeMenu() {
+                body.classList.remove('menu-open');
+                menuBtn.setAttribute('aria-expanded', 'false');
+            }
+            function toggleMenu() {
+                if (body.classList.contains('menu-open')) closeMenu();
+                else openMenu();
+            }
+
+            menuBtn.addEventListener('click', toggleMenu);
+            menuClose.addEventListener('click', function () { closeMenu(); menuBtn.focus(); });
+            menuOverlay.addEventListener('click', closeMenu);
+            mobLinks.forEach(function (link) { link.addEventListener('click', closeMenu); });
+
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && body.classList.contains('menu-open')) {
+                    closeMenu();
+                    menuBtn.focus();
+                }
+            });
+
+            /* ---------- Market Pulse chart ---------- */
+            var chartEl = document.getElementById('marketChart');
+            if (chartEl && window.Chart) {
+                var isMobile = window.innerWidth < 640;
+                new Chart(chartEl.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['RYANAIR', 'SAS', 'EASYJET', 'TUI', 'CONDOR', 'JET TIME', 'AEGEAN'],
+                        datasets: [{
+                            label: 'Operator Pulse %',
+                            data: [23.9, 9.6, 9.1, 6.7, 6.3, 6.0, 4.5],
+                            backgroundColor: '#0086D6',
+                            borderRadius: 8,
+                            hoverBackgroundColor: '#33B2E5',
+                            maxBarThickness: 48
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        animation: prefersReducedMotion ? false : undefined,
+                        layout: { padding: { top: 8, right: 4, bottom: 0, left: 0 } },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: 'rgba(2, 6, 23, 0.95)',
+                                borderColor: 'rgba(51, 178, 229, 0.4)',
+                                borderWidth: 1,
+                                titleColor: '#33B2E5',
+                                bodyColor: '#ffffff',
+                                titleFont: { family: 'Inter', weight: '900', size: 11 },
+                                bodyFont: { family: 'Inter', weight: '700', size: 12 },
+                                padding: 12,
+                                cornerRadius: 10,
+                                displayColors: false,
+                                callbacks: {
+                                    label: function (ctx) { return 'Operator Pulse: ' + ctx.parsed.y + '%'; }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                suggestedMax: 26,
+                                grid: { color: 'rgba(255,255,255,0.05)' },
+                                ticks: {
+                                    color: '#64748b',
+                                    font: { family: 'Inter', size: isMobile ? 9 : 10, weight: '900' },
+                                    callback: function (value) { return value + '%'; }
+                                }
+                            },
+                            x: {
+                                grid: { display: false },
+                                ticks: {
+                                    color: '#ffffff',
+                                    font: { family: 'Inter', size: isMobile ? 7 : 9, weight: '900' },
+                                    maxRotation: isMobile ? 60 : 0,
+                                    minRotation: isMobile ? 60 : 0,
+                                    autoSkip: false
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        })();
     </script>
 </body>
 </html>
